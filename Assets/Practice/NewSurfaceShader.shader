@@ -6,6 +6,10 @@ Shader "Custom/NewSurfaceShader"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+        _Red ("Red", Range(0, 1)) = 0
+        _Green ("Green", Range(0, 1)) = 0
+        _Blue ("Blue", Range(0, 1)) = 0
+        _BrightDark ("Brightness $ Darkness", Range(-2, 2)) = 0
     }
     SubShader
     {
@@ -21,6 +25,11 @@ Shader "Custom/NewSurfaceShader"
 
         sampler2D _MainTex;
 
+        float _Red;
+        float _Green;
+        float _Blue;
+        float _BrightDark;
+
         struct Input
         {
             float2 uv_MainTex;
@@ -30,12 +39,8 @@ Shader "Custom/NewSurfaceShader"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            float r = 1;
-            float2 gg = float2(0.5, 0);
-            float3 bbb = float3(1, 0, 1);
-
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = float3(bbb.b, gg.r, r.r);
+            o.Albedo= fixed3(_Red, _Green, _Blue) + _BrightDark;
             o.Alpha = c.a;
         }
         ENDCG
