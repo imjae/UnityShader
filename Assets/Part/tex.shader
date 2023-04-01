@@ -9,7 +9,6 @@ Shader "Custom/tex"
         Tags { "RenderType"="Opaque" }
 
         CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
         #pragma surface surf Standard fullforwardshadows
 
         sampler2D _MainTex;
