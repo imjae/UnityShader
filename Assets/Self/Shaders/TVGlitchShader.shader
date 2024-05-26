@@ -3,11 +3,12 @@ Shader "Self/TVGlitchShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _HorizontalWaveLength ("HorizontalWaveLength", float) = 0
-        _HorizontalWaveSpeed ("HorizontalWaveSpeed", float) = 0
-
-        _NoiseScale ("NoiseScale", float) = 0
-
+        _HorizontalWaveLength ("Horizontal WaveLength", Float) = 0
+        _HorizontalWaveSpeed ("Horizontal WaveSpeed", Float) = 1
+        _NoiseScale ("Noise Scale", Float) = 0
+        _NoiseSpeed ("Noise Speed", Float) = 0
+        _MinNoise ("Minimum Noise Arrange", Float) = -1
+        _MaxNoise ("Maximum Noise Arrange", Float) = 1
     }
     SubShader
     {
@@ -38,6 +39,9 @@ Shader "Self/TVGlitchShader"
             float _HorizontalWaveLength;
             float _HorizontalWaveSpeed;
             float _NoiseScale;
+            float _NoiseSpeed;
+            float _MinNoise;
+            float _MaxNoise;
 
             float4 _MainTex_ST;
 
@@ -55,8 +59,17 @@ Shader "Self/TVGlitchShader"
                 return Out;
             }
 
+            float Remap_float(float value, float2 InMinMax, float2 OutMinMax)
+            {
+                // Normalize the input value to the range [0, 1]
+                float t = saturate((value - InMinMax.x) / (InMinMax.y - InMinMax.x));
+                
+                // Remap the normalized value to the output range
+                return lerp(OutMinMax.x, OutMinMax.y, t);
+            }
+
             // Gradient Noise를 생성하는 함수
-            float2 unity_gradientNoise_dir(float2 p)
+            float2 gradientNoise_dir(float2 p)
             {
                 p = p % 289;
                 float x = (34 * p.x + 1) * p.x % 289 + p.y;
@@ -65,35 +78,39 @@ Shader "Self/TVGlitchShader"
                 return normalize(float2(x - floor(x + 0.5), abs(x) - 0.5));
             }
 
-            float unity_gradientNoise(float2 p)
+            float gradientNoise(float2 p)
             {
                 float2 ip = floor(p);
                 float2 fp = frac(p);
-                float d00 = dot(unity_gradientNoise_dir(ip), fp);
-                float d01 = dot(unity_gradientNoise_dir(ip + float2(0, 1)), fp - float2(0, 1));
-                float d10 = dot(unity_gradientNoise_dir(ip + float2(1, 0)), fp - float2(1, 0));
-                float d11 = dot(unity_gradientNoise_dir(ip + float2(1, 1)), fp - float2(1, 1));
+                float d00 = dot(gradientNoise_dir(ip), fp);
+                float d01 = dot(gradientNoise_dir(ip + float2(0, 1)), fp - float2(0, 1));
+                float d10 = dot(gradientNoise_dir(ip + float2(1, 0)), fp - float2(1, 0));
+                float d11 = dot(gradientNoise_dir(ip + float2(1, 1)), fp - float2(1, 1));
                 fp = fp * fp * fp * (fp * (fp * 6 - 15) + 10);
                 return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
             }
 
             void GradientNoise(float2 UV, float Scale, out float Out)
             {
-                Out = unity_gradientNoise(UV * Scale) + 0.5;
+                Out = gradientNoise(UV * Scale) + 0.5;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float2 uv = i.uv;
+                float timeUV1 = i.uv.g + _Time.y * _NoiseSpeed;
 
+                float gradientNoise;
+                GradientNoise(timeUV1, _NoiseScale, gradientNoise);
 
+                float remapGradientNoise = Remap_float(gradientNoise, float2(0,1), float2(_MinNoise, _MaxNoise));
 
-                float y = i.uv.y;
-                float ty = y + _Time.y * _HorizontalWaveSpeed;
-                float4 sineValue = sin(ty * _HorizontalWaveLength);
+                float2 realUV = i.uv + remapGradientNoise;
 
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, realUV);
+
+                float timeUV2 = i.uv.g + _Time.y * _HorizontalWaveSpeed;
+                float4 sineValue = sin(timeUV2 * _HorizontalWaveLength);
                 col = col * Remap_float4(sineValue, float2(-1,1), float2(0.5, 1));
 
                 return col;

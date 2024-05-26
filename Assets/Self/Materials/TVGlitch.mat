@@ -98,8 +98,14 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HorizontalWaveWeight: 80
+    - _HorizontalWaveLength: 90
+    - _HorizontalWaveSpeed: 10
+    - _HorizontalWaveWeight: 48.45
+    - _MaxNoise: 0.1
     - _Metallic: 0
+    - _MinNoise: 0
+    - _NoiseScale: 15
+    - _NoiseSpeed: 5
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
