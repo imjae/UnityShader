@@ -3,12 +3,14 @@ Shader "Self/TVGlitchShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _HorizontalWaveLength ("Horizontal WaveLength", Float) = 0
-        _HorizontalWaveSpeed ("Horizontal WaveSpeed", Float) = 1
-        _NoiseScale ("Noise Scale", Float) = 0
-        _NoiseSpeed ("Noise Speed", Float) = 0
-        _MinNoise ("Minimum Noise Arrange", Float) = -1
-        _MaxNoise ("Maximum Noise Arrange", Float) = 1
+        _HorizontalGlitchLength ("Horizontal WaveLength", Float) = 0
+        _HorizontalGlitchSpeed ("Horizontal WaveSpeed", Float) = 1
+        _WaveNoiseScale ("Noise Scale", Float) = 0
+        _WaveNoiseSpeed ("Noise Speed", Float) = 0
+        _MinWaveNoise ("Minimum Noise Arrange", Float) = -1
+        _MaxWaveNoise ("Maximum Noise Arrange", Float) = 1
+        _BlinkNoiseSpeed ("Blink Noise Speed", Float) = 40
+        _BlinkNoiseScale ("Blink Noise Scale", Float) = 10
     }
     SubShader
     {
@@ -36,12 +38,15 @@ Shader "Self/TVGlitchShader"
             };
 
             sampler2D _MainTex;
-            float _HorizontalWaveLength;
-            float _HorizontalWaveSpeed;
-            float _NoiseScale;
-            float _NoiseSpeed;
-            float _MinNoise;
-            float _MaxNoise;
+            float _HorizontalGlitchLength;
+            float _HorizontalGlitchSpeed;
+            float _WaveNoiseScale;
+            float _WaveNoiseSpeed;
+            float _Wave;
+            float _MaxWaveNoise;
+
+            float _BlinkNoiseSpeed;
+            float _BlinkNoiseScale;
 
             float4 _MainTex_ST;
 
@@ -97,21 +102,21 @@ Shader "Self/TVGlitchShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float timeUV1 = i.uv.g + _Time.y * _NoiseSpeed;
+                float blinkNoise;
+                GradientNoise(_Time.y * _BlinkNoiseSpeed, _BlinkNoiseScale, blinkNoise);
 
-                float gradientNoise;
-                GradientNoise(timeUV1, _NoiseScale, gradientNoise);
+                float waveNoise;
+                GradientNoise(i.uv.g + _Time.y * _WaveNoiseSpeed, _WaveNoiseScale, waveNoise);
+                float remapGradientNoise = Remap_float(waveNoise, float2(0,1), float2(_Wave, _MaxWaveNoise));
 
-                float remapGradientNoise = Remap_float(gradientNoise, float2(0,1), float2(_MinNoise, _MaxNoise));
-
-                float2 realUV = i.uv + remapGradientNoise;
+                float2 realUV = i.uv + remapGradientNoise * blinkNoise * blinkNoise * blinkNoise * blinkNoise;
 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, realUV);
 
-                float timeUV2 = i.uv.g + _Time.y * _HorizontalWaveSpeed;
-                float4 sineValue = sin(timeUV2 * _HorizontalWaveLength);
-                col = col * Remap_float4(sineValue, float2(-1,1), float2(0.5, 1));
+                float horizontalGlitch2Time = i.uv.g + _Time.y * _HorizontalGlitchSpeed;
+                float4 horizontalGlitchValue = sin(horizontalGlitch2Time * _HorizontalGlitchLength);
+                col = col * Remap_float4(horizontalGlitchValue, float2(-1,1), float2(0.5, 1));
 
                 return col;
             }
