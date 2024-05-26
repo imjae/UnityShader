@@ -5,6 +5,8 @@ Shader "Self/TVGlitchShader"
         _MainTex ("Texture", 2D) = "white" {}
         _HorizontalGlitchLength ("Horizontal WaveLength", Float) = 0
         _HorizontalGlitchSpeed ("Horizontal WaveSpeed", Float) = 1
+        _MinHorizontalGlitch ("Minimum Horizontal Glitch", Float) = 1
+        _MaxHorizontalGlitch ("Maximum Horizontal Glitch", Float) = 1
         _WaveNoiseScale ("Noise Scale", Float) = 0
         _WaveNoiseSpeed ("Noise Speed", Float) = 0
         _MinWaveNoise ("Minimum Noise Arrange", Float) = -1
@@ -42,7 +44,7 @@ Shader "Self/TVGlitchShader"
             float _HorizontalGlitchSpeed;
             float _WaveNoiseScale;
             float _WaveNoiseSpeed;
-            float _Wave;
+            float _MinWaveNoise;
             float _MaxWaveNoise;
 
             float _BlinkNoiseSpeed;
@@ -50,21 +52,13 @@ Shader "Self/TVGlitchShader"
 
             float4 _MainTex_ST;
 
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                return o;
-            }
-
-            float4 Remap_float4(float4 In, float2 InMinMax, float2 OutMinMax) 
+            float4 remap_float4(float4 In, float2 InMinMax, float2 OutMinMax) 
             {
                 float4 Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
                 return Out;
             }
 
-            float Remap_float(float value, float2 InMinMax, float2 OutMinMax)
+            float remap_float(float value, float2 InMinMax, float2 OutMinMax)
             {
                 // Normalize the input value to the range [0, 1]
                 float t = saturate((value - InMinMax.x) / (InMinMax.y - InMinMax.x));
@@ -95,19 +89,27 @@ Shader "Self/TVGlitchShader"
                 return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
             }
 
-            void GradientNoise(float2 UV, float Scale, out float Out)
+            void gradientNoise(float2 UV, float Scale, out float Out)
             {
                 Out = gradientNoise(UV * Scale) + 0.5;
+            }
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float blinkNoise;
-                GradientNoise(_Time.y * _BlinkNoiseSpeed, _BlinkNoiseScale, blinkNoise);
+                gradientNoise(_Time.y * _BlinkNoiseSpeed, _BlinkNoiseScale, blinkNoise);
 
                 float waveNoise;
-                GradientNoise(i.uv.g + _Time.y * _WaveNoiseSpeed, _WaveNoiseScale, waveNoise);
-                float remapGradientNoise = Remap_float(waveNoise, float2(0,1), float2(_Wave, _MaxWaveNoise));
+                gradientNoise(i.uv.g + _Time.y * _WaveNoiseSpeed, _WaveNoiseScale, waveNoise);
+                float remapGradientNoise = remap_float(waveNoise, float2(0,1), float2(_MinWaveNoise, _MaxWaveNoise));
 
                 float2 realUV = i.uv + remapGradientNoise * blinkNoise * blinkNoise * blinkNoise * blinkNoise;
 
@@ -116,7 +118,7 @@ Shader "Self/TVGlitchShader"
 
                 float horizontalGlitch2Time = i.uv.g + _Time.y * _HorizontalGlitchSpeed;
                 float4 horizontalGlitchValue = sin(horizontalGlitch2Time * _HorizontalGlitchLength);
-                col = col * Remap_float4(horizontalGlitchValue, float2(-1,1), float2(0.5, 1));
+                col = col * remap_float4(horizontalGlitchValue, float2(-1,1), float2(0.5, 1));
 
                 return col;
             }

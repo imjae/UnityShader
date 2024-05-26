@@ -85,8 +85,8 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BlinkNoiseScale: 0
-    - _BlinkNoiseSpeed: 0
+    - _BlinkNoiseScale: 0.1
+    - _BlinkNoiseSpeed: 20
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -100,13 +100,13 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HorizontalGlitchLength: 600
-    - _HorizontalGlitchSpeed: 20
+    - _HorizontalGlitchLength: 18.23
+    - _HorizontalGlitchSpeed: 50
     - _HorizontalWaveLength: 90
     - _HorizontalWaveSpeed: 10
     - _HorizontalWaveWeight: 48.45
     - _MaxNoise: 0.1
-    - _MaxWaveNoise: 0.1
+    - _MaxWaveNoise: 0.2
     - _Metallic: 0
     - _MinNoise: 0
     - _MinWaveNoise: 0
@@ -123,8 +123,8 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _WaveNoiseScale: 10
-    - _WaveNoiseSpeed: 30
+    - _WaveNoiseScale: 5
+    - _WaveNoiseSpeed: 40
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
