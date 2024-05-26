@@ -45,7 +45,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Strength: 0
-    - _Threshold: 0.15
+    - _Threshold: 0
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &6163086304218336242
