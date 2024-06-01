@@ -1,17 +1,16 @@
-Shader "Self/FishEye"
+Shader "self/fisheye" 
 {
-    Properties
-    {
-        _MainTex ("Main Texture", 2D) = "white" {}
-        _DistortionAmount ("Distortion Amount", Range(0, 1)) = 0.5
-    }
-
-    SubShader
-    {
-        // Draw after all opaque geometry
+    SubShader 
+{
+        // Opaque geometry 이후에 렌더링
         Tags { "Queue" = "Transparent" }
 
-        // Render the object with the texture generated above, and invert the colors
+        // 화면 뒤의 오브젝트를 _BackgroundTexture에 저장
+        GrabPass 
+        {
+            "_BackgroundTexture"
+        }
+
         Pass
         {
             CGPROGRAM
@@ -25,26 +24,22 @@ Shader "Self/FishEye"
                 float4 pos : SV_POSITION;
             };
 
-            v2f vert(appdata_base v) {
+            v2f vert(appdata_base v)
+            {
                 v2f o;
-                // use UnityObjectToClipPos from UnityCG.cginc to calculate 
-                // the clip-space of the vertex
                 o.pos = UnityObjectToClipPos(v.vertex);
-
-                // use ComputeGrabScreenPos function from UnityCG.cginc
-                // to get the correct texture coordinate
                 o.grabPos = ComputeGrabScreenPos(o.pos);
                 return o;
             }
 
+            sampler2D _BackgroundTexture;
 
             half4 frag(v2f i) : SV_Target
             {
-                half4 bgcolor = tex2D(_MainTex, i.grabPos);
-                return 1 - bgcolor;
+                half4 bgcolor = tex2D(_BackgroundTexture, i.grabPos);
+                return 1 - bgcolor; // 색상 반전
             }
             ENDCG
         }
-
     }
 }
