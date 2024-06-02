@@ -1,7 +1,13 @@
 Shader "self/fisheye" 
 {
+    Properties 
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+        _Strength ("Strength", Range(0, 1)) = 0.5
+    }
+
     SubShader 
-{
+    {
         // Opaque geometry 이후에 렌더링
         Tags { "Queue" = "Transparent" }
 
@@ -18,17 +24,29 @@ Shader "self/fisheye"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
             struct v2f
             {
-                float4 grabPos : TEXCOORD0;
+                float2 uv : TEXCOORD0;
+                float4 grabPos : TEXCOORD1;
                 float4 pos : SV_POSITION;
             };
 
-            v2f vert(appdata_base v)
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float _Strength;
+
+            v2f vert(appdata v)
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.grabPos = ComputeGrabScreenPos(o.pos);
+                o.uv = v.uv;
                 return o;
             }
 
@@ -36,8 +54,14 @@ Shader "self/fisheye"
 
             half4 frag(v2f i) : SV_Target
             {
-                half4 bgcolor = tex2D(_BackgroundTexture, i.grabPos);
-                return 1 - bgcolor; // 색상 반전
+
+                float2 center = float2(0.5, 0.5);
+                float2 offset = i.uv - center;
+                float distance = length(offset);
+                float2 distortedUV = center + offset * (1 + _Strength * distance);
+
+                half4 bgcolor = tex2D(_MainTex, distortedUV);
+                return bgcolor;
             }
             ENDCG
         }
