@@ -4,6 +4,11 @@ Shader "Self/TVSimpleNoise"
     {
         _MainTex ("Texture", 2D) = "white" {}
 
+        _HorizontalGlitchLength ("Horizontal WaveLength", Float) = 0
+        _HorizontalGlitchSpeed ("Horizontal WaveSpeed", Float) = 1
+        _MinHorizontalGlitch ("Minimum Horizontal Glitch", Float) = 1
+        _MaxHorizontalGlitch ("Maximum Horizontal Glitch", Float) = 1
+
         _PosterizeStepX ("PosterizeStep X", Range(1, 300)) = 100
         _PosterizeStepY ("PosterizeStep Y", Range(1, 300)) = 100
 
@@ -14,6 +19,14 @@ Shader "Self/TVSimpleNoise"
         _RemapSimpleNoiseMax ("Remap Simple Noise Max", Range(0, 1)) = 0
 
         _DistortionStrength ("Distortion Strength", Range(0, 1)) = 0.5
+
+        _WaveNoiseScale ("Noise Scale", Float) = 0
+        _WaveNoiseSpeed ("Noise Speed", Float) = 0
+        _MinWaveNoise ("Minimum Noise Arrange", Float) = -1
+        _MaxWaveNoise ("Maximum Noise Arrange", Float) = 1
+
+        _BlinkNoiseSpeed ("Blink Noise Speed", float) = 0
+        _BlinkNoiseScale ("Blink Noise Scale", float) = 0
     }
 
     SubShader
@@ -156,6 +169,11 @@ Shader "Self/TVSimpleNoise"
             sampler2D _MainTex;
             sampler2D _GrabTex;
 
+            float _HorizontalGlitchLength;
+            float _HorizontalGlitchSpeed;
+            float _MinHorizontalGlitch;
+            float _MaxHorizontalGlitch;
+
             float _PosterizeStepX;
             float _PosterizeStepY;
 
@@ -166,6 +184,14 @@ Shader "Self/TVSimpleNoise"
             float _RemapSimpleNoiseMax;
 
             float _DistortionStrength;
+
+            float _WaveNoiseScale;
+            float _WaveNoiseSpeed;
+            float _MinWaveNoise;
+            float _MaxWaveNoise;
+
+            float _BlinkNoiseSpeed;
+            float _BlinkNoiseScale;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -183,8 +209,25 @@ Shader "Self/TVSimpleNoise"
                 float2 distoredUV;
                 DistoredGrabUV(i.grabUV, _DistortionStrength, distoredUV);
 
-                fixed4 color = tex2D(_GrabTex, distoredUV);// * noiseValue;
-                return color * remapNoiseValue.x;
+                float waveNoise;
+                Unity_GradientNoise_float(i.grabUV.g + _Time.y * _WaveNoiseSpeed, _WaveNoiseScale, waveNoise);
+
+                float4 remapWaveNoise;
+                Unity_Remap_float4(waveNoise, float2(0,1), float2(_MinWaveNoise, _MaxWaveNoise), remapWaveNoise);
+
+                float blinkNoise;
+                Unity_GradientNoise_float(_Time.y * _BlinkNoiseSpeed, _BlinkNoiseScale, blinkNoise);
+
+                float2 resultUV = distoredUV + remapWaveNoise.x + blinkNoise * blinkNoise  * blinkNoise * blinkNoise;
+
+                fixed4 color = tex2D(_GrabTex, resultUV);// * noiseValue;
+                
+                float horizontalGlitch2Time = resultUV.g + _Time.y * _HorizontalGlitchSpeed;
+                float4 horizontalGlitchValue = sin(horizontalGlitch2Time * _HorizontalGlitchLength);
+
+                float4 horizontalGlitchColor;
+                Unity_Remap_float4(horizontalGlitchValue, float2(-1, 1), float2(_MinHorizontalGlitch, _MaxHorizontalGlitch), horizontalGlitchColor);
+                return color * remapNoiseValue.x * horizontalGlitchColor ;
             }
             ENDCG
         }
