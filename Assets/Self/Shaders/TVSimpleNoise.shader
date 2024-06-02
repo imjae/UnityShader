@@ -218,7 +218,7 @@ Shader "Self/TVSimpleNoise"
                 float blinkNoise;
                 Unity_GradientNoise_float(_Time.y * _BlinkNoiseSpeed, _BlinkNoiseScale, blinkNoise);
 
-                float2 resultUV = distoredUV + remapWaveNoise.x + blinkNoise * blinkNoise  * blinkNoise * blinkNoise;
+                float2 resultUV = distoredUV;// + remapWaveNoise.x + blinkNoise * blinkNoise  * blinkNoise * blinkNoise;
 
                 fixed4 color = tex2D(_GrabTex, resultUV);// * noiseValue;
                 

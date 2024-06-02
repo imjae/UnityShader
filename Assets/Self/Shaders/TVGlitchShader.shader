@@ -118,6 +118,7 @@ Shader "Self/TVGlitchShader"
 
                 float horizontalGlitch2Time = i.uv.g + _Time.y * _HorizontalGlitchSpeed;
                 float4 horizontalGlitchValue = sin(horizontalGlitch2Time * _HorizontalGlitchLength);
+
                 col = col * remap_float4(horizontalGlitchValue, float2(-1,1), float2(0.5, 1));
 
                 return col;
