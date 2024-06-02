@@ -64,6 +64,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _DistortionStrength: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -72,6 +73,12 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PosterizeStepX: 300
+    - _PosterizeStepY: 300
+    - _RemapSimpleNoiseMax: 1
+    - _RemapSimpleNoiseMin: 0.758
+    - _SimpleNoiseScale: 100
+    - _SimpleNoiseSpeed: 100
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
