@@ -4,6 +4,7 @@ Shader "Self/TVSimpleNoise"
     {
         _MainTex ("Texture", 2D) = "white" {}
 
+        [MaterialPropertyDrawer(typeof(ShaderProperties))]
         _HorizontalGlitchLength ("Horizontal WaveLength", Float) = 0
         _HorizontalGlitchSpeed ("Horizontal WaveSpeed", Float) = 1
         _MinHorizontalGlitch ("Minimum Horizontal Glitch", Float) = 1

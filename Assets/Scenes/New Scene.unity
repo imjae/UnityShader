@@ -598,6 +598,188 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f28c741d6699b4f825b77742c0d04f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 0}
+  propertyAnimationCurveList:
+  - shaderPropertyType: 4
+    propertyName: _MainTex
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _HorizontalGlitchLength
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _HorizontalGlitchSpeed
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _MinHorizontalGlitch
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _MaxHorizontalGlitch
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 3
+    propertyName: _PosterizeStepX
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 3
+    propertyName: _PosterizeStepY
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _SimpleNoiseScale
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _SimpleNoiseSpeed
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 3
+    propertyName: _RemapSimpleNoiseMin
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 3
+    propertyName: _RemapSimpleNoiseMax
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 3
+    propertyName: _DistortionStrength
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _WaveNoiseScale
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _WaveNoiseSpeed
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _MinWaveNoise
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _MaxWaveNoise
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _BlinkNoiseSpeed
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - shaderPropertyType: 2
+    propertyName: _BlinkNoiseScale
+    propertyDescription: 
+    duration: 0
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
